@@ -38,6 +38,7 @@ dependencies {
     //Architecture Components
     implementation "android.arch.paging:runtime:1.0.0"
     implementation 'android.arch.lifecycle:extensions:1.1.1'
+    implementation 'android.arch.lifecycle:reactivestreams:1.1.1'
 
     //Testing
     implementation 'com.android.support:support-v4:27.1.1'
