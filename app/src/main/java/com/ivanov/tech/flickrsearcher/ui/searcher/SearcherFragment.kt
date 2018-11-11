@@ -62,6 +62,7 @@ class SearcherFragment : Fragment() {
 
 
         viewModel.photoPagedList.observe(this, Observer {
+            Log.e("Igor log","viewModel.photoPagedList.observe pagedlis.size="+it?.size)
             searcherPagedListAdapter.submitList(it)
         })
 
@@ -69,9 +70,12 @@ class SearcherFragment : Fragment() {
 
     private fun setupAutoCompleteEditText(){
 
-        val suggestions=prefs.suggestions as ArrayList<String>
+        val adapter=ArrayAdapter<String>(context, android.R.layout.simple_list_item_1)
 
-        val adapter=ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, suggestions)
+        viewModel.suggestions.observe(this, Observer{
+            adapter.clear()
+            adapter.addAll(it)
+        })
 
         // Create the adapter and set it to the AutoCompleteTextView
         search.setAdapter(adapter)
@@ -82,16 +86,17 @@ class SearcherFragment : Fragment() {
                 Log.e("Igor log","Add text to list of suggestion")
 
                 val text=search.text.toString()
-                adapter.add(text)
 
-                adapter.clear()
-                adapter.addAll(suggestions)
+                //Save in Prefs
+                val temp = (prefs.suggestions as ArrayList<String>)
+                temp.add(text)
+                prefs.suggestions=temp
 
+                //Get suggestions from prefs and post to LiveData
+                viewModel.suggestions.postValue(prefs.suggestions as ArrayList<String>)
 
-                suggestions.add(text)
-                prefs.suggestions = suggestions
-
-                searchAction(text)
+                //Create new DataSource and PagedList pair
+                viewModel.setText(text)
 
                 true
             }else{
@@ -100,11 +105,6 @@ class SearcherFragment : Fragment() {
         }
     }
 
-    fun searchAction(text:String){
-        viewModel.photoPagedList.value?.clear()
-        searcherPagedListAdapter.notifyDataSetChanged()
-
-    }
 
     fun startFullscreenActivity(flicckrPhoto: FlickrPhoto){
         val intent = Intent(activity, FullscreenActivity::class.java).apply {

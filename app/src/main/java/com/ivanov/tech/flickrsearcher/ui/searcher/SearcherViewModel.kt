@@ -1,20 +1,22 @@
 package com.ivanov.tech.flickrsearcher.ui.searcher
 
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.ViewModel
+import android.arch.lifecycle.*
 import android.arch.paging.LivePagedListBuilder
 import android.arch.paging.PagedList
 import com.ivanov.tech.flickrsearcher.App.Companion.prefs
 import com.ivanov.tech.flickrsearcher.server.ServerMethodsProvider
 import com.ivanov.tech.flickrsearcher.server.FlickrPhoto
+import io.reactivex.Flowable
+import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
+import java.util.ArrayList
 
 class SearcherViewModel : ViewModel() {
 
     private val pageSize = 10
 
     var photoPagedList: LiveData<PagedList<FlickrPhoto>>
+    var suggestions : MutableLiveData<ArrayList<String>> = MutableLiveData()
 
     private val compositeDisposable = CompositeDisposable()
 
@@ -31,12 +33,17 @@ class SearcherViewModel : ViewModel() {
 
         photoPagedList = LivePagedListBuilder<Int, FlickrPhoto>(searcherPageKeyedDataSourceFactory, config).build()
 
-
+        suggestions.postValue(prefs.suggestions as ArrayList<String>)
 
     }
 
     override fun onCleared() {
         super.onCleared()
         compositeDisposable.dispose()
+    }
+
+    fun setText(text:String){
+        searcherPageKeyedDataSourceFactory.text = text
+        photoPagedList.value?.dataSource?.invalidate()
     }
 }

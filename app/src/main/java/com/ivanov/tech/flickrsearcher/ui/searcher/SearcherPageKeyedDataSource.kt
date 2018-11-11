@@ -9,13 +9,15 @@ import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 
 class SearcherPageKeyedDataSource(
+        val text:String,
         private val serverMethods: ServerMethods,
         private val compositeDisposable: CompositeDisposable)
     : PageKeyedDataSource<Int, FlickrPhoto>() {
 
 
     fun searchPhotos(page:Int): Single<FlickrResponse> {
-        return serverMethods.searchPhotos(ServerSettings.KEY,"relevance", "1", 10, page, 0, "photos", "json", "1", "Ermin")
+
+        return serverMethods.searchPhotos(ServerSettings.KEY,"relevance", "1", 10, page, 0, "photos", "json", "1",text)
     }
 
     override fun loadInitial(params: LoadInitialParams<Int>, callback: LoadInitialCallback<Int, FlickrPhoto>) {
@@ -44,7 +46,7 @@ class SearcherPageKeyedDataSource(
         Log.e("Igor Log","SearcherPageKeyedDataSource loadAfter params.key="+params.key)
 
         compositeDisposable.add(
-                serverMethods.searchPhotos("591f6080ae91145299f619fca69d9245","relevance", "1", 10, params.key, 0, "photos", "json", "1", "Ermin")
+                searchPhotos(params.key)
                         .map{flickrResponse -> flickrResponse.photos}
                         .map{photos->photos.photo}
                         .subscribe(
