@@ -9,20 +9,19 @@ import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 import toothpick.Toothpick
+import javax.inject.Inject
 import javax.inject.Provider
 
-class SuggestionsRepositoryProvider(application: Application):Provider<SuggestionsRepository>{
+class SuggestionsRepositoryProvider:Provider<SuggestionsRepository>{
 
-    //@Inject
-    //private lateinit var prefs:SharedPreferences
-
-    val prefs = application.getSharedPreferences("com.ivanov.tech.flickrsearcher.prefs",0)
+    @Inject
+    lateinit var prefs:SharedPreferences
 
     init{
 
         Log.e("Igor log","SuggestionsRepositoryProvider init")
 
-        val appScope = Toothpick.openScope("AppScope");
+        val appScope = Toothpick.openScopes("AppScope");
         Toothpick.inject(this, appScope);
 
     }
@@ -31,20 +30,16 @@ class SuggestionsRepositoryProvider(application: Application):Provider<Suggestio
         return repository(prefs)
     }
 
-    private class repository(val prefs:SharedPreferences): SuggestionsRepository{
+    private class repository(private val prefs:SharedPreferences): SuggestionsRepository{
 
         val livedata= MutableLiveData<List<String>>()
 
-        init{
-            Log.e("Igor log","SuggestionsRepositoryProvider.repository init")
-            Log.e("Igor log","suggestions="+suggestions.toString())
 
-            livedata.postValue(suggestions)
-        }
-
-        private val SUGGESTIONS = "suggestionsList"
+        private val SUGGESTIONS = "suggestions"
         private var suggestions: List<String>
             get() {
+
+
                 val json_string=prefs.getString(SUGGESTIONS,"[]")
 
                 val moshi = Moshi.Builder()
@@ -59,6 +54,7 @@ class SuggestionsRepositoryProvider(application: Application):Provider<Suggestio
 
             set(list){
 
+
                 val moshi = Moshi.Builder()
                         .build()
 
@@ -72,6 +68,13 @@ class SuggestionsRepositoryProvider(application: Application):Provider<Suggestio
             }
 
         override fun getList(): LiveData<List<String>> {
+
+            if(livedata.value==null){
+
+                livedata.postValue(suggestions)
+            }
+
+
             return livedata
         }
 
@@ -80,12 +83,15 @@ class SuggestionsRepositoryProvider(application: Application):Provider<Suggestio
             val temp_suggestions=suggestions as ArrayList
 
             if(!temp_suggestions.contains(value)) {
-
+                Log.e("Igor log","repository.put.notContain(${value}) then add")
                 temp_suggestions.add(value)
                 suggestions = temp_suggestions
 
                 livedata.postValue(suggestions)
+            }else{
+                Log.e("Igor log","repository.put.Contain(${value}) then skip")
             }
+
         }
 
         override fun clear() {

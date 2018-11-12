@@ -4,6 +4,8 @@ import android.arch.lifecycle.*
 import android.arch.paging.LivePagedListBuilder
 import android.arch.paging.PagedList
 import android.util.Log
+import com.ivanov.tech.flickrsearcher.AppModule
+import com.ivanov.tech.flickrsearcher.SearcherViewModelModule
 import com.ivanov.tech.flickrsearcher.SuggestionsRepository
 import com.ivanov.tech.flickrsearcher.server.ServerMethodsProvider
 import com.ivanov.tech.flickrsearcher.server.FlickrPhoto
@@ -42,6 +44,7 @@ class SearcherViewModel : ViewModel() {
     init {
 
         val scope = Toothpick.openScopes("AppScope","ViewModelScope")
+        scope.installModules(SearcherViewModelModule())
         Toothpick.inject(this, scope);
 
 
@@ -54,9 +57,6 @@ class SearcherViewModel : ViewModel() {
                 .build()
 
         pagedList = LivePagedListBuilder<Int, FlickrPhoto>(searcherPageKeyedDataSourceFactory, config).build()
-
-        Log.e("Igor Log","${Toothpick.openScope("AppScope")}")
-
 
     }
 

@@ -36,6 +36,8 @@ class SearcherFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
 
+        Log.e("Igor Log","SearcherFragment.onCreateView")
+
         val view=inflater.inflate(R.layout.fragment_searcher, container, false)
 
         val appScope = Toothpick.openScopes("AppScope","FragmentScope")
@@ -47,7 +49,7 @@ class SearcherFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-
+        Log.e("Igor Log","SearcherFragment.onActivityCreated")
 
         viewModel = ViewModelProviders.of(this).get(SearcherViewModel::class.java)
         // TODO: Use the ViewModel
@@ -56,13 +58,15 @@ class SearcherFragment : Fragment() {
     }
 
     private fun setupPagedList() {
+        Log.e("Igor Log","SearcherFragment.setupPagedList")
+
         searcherPagedListAdapter = SearcherPagedListAdapter(::photoItemClicked)
         recyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         recyclerView.adapter = searcherPagedListAdapter
 
 
         viewModel.pagedList.observe(this, Observer {
-            Log.e("Igor log","viewModel.pagedList.observe pagedlis.size="+it?.size)
+            Log.e("Igor log","SearcherFragment.setupPagedList observer called pagedlis.size="+it?.size)
             searcherPagedListAdapter.submitList(it)
         })
 
@@ -70,10 +74,13 @@ class SearcherFragment : Fragment() {
 
     private fun setupAutoCompleteEditText(){
 
+        Log.e("Igor Log","SearcherFragment.setupAutoCompleteEditText")
+
         val arrayAdapter=ArrayAdapter<String>(context, android.R.layout.simple_list_item_1)// Create the adapter and set it to the AutoCompleteTextView
         search.setAdapter(arrayAdapter)
 
         viewModel.suggestionsList.observe(this, Observer{
+            Log.e("Igor log","SearcherFragment.setupAutoCompleteEditText observer called list.size="+it?.size)
             arrayAdapter.clear()
             arrayAdapter.addAll(it)
         })
@@ -94,6 +101,9 @@ class SearcherFragment : Fragment() {
 
 
     fun startFullscreenActivity(flicckrPhoto: FlickrPhoto){
+
+        Log.e("Igor Log","SearcherFragment.startFullscreenActivity")
+
         val intent = Intent(activity, FullscreenActivity::class.java).apply {
             putExtra(EXTRA_URL, flicckrPhoto.url)
             putExtra(EXTRA_TITLE, flicckrPhoto.title)
