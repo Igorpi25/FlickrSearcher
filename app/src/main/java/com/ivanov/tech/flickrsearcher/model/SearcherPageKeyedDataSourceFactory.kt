@@ -1,13 +1,8 @@
-package com.ivanov.tech.flickrsearcher.ui.searcher
+package com.ivanov.tech.flickrsearcher.model
 
-import android.arch.lifecycle.MutableLiveData
 import android.arch.paging.DataSource
 import android.util.Log
-import com.ivanov.tech.flickrsearcher.server.ServerMethods
-import com.ivanov.tech.flickrsearcher.server.FlickrPhoto
-import io.reactivex.Observable
-import io.reactivex.Observer
-import io.reactivex.disposables.CompositeDisposable
+import com.ivanov.tech.flickrsearcher.model.entity.FlickrPhoto
 
 class SearcherPageKeyedDataSourceFactory
     : DataSource.Factory<Int, FlickrPhoto>() {

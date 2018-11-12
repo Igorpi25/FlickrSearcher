@@ -1,14 +1,16 @@
-package com.ivanov.tech.flickrsearcher.server;
+package com.ivanov.tech.flickrsearcher.model.repository;
 
 /**
  * Created by Developer on 17.05.18.
  */
 
+import com.ivanov.tech.flickrsearcher.model.entity.FlickrResponse;
+
 import io.reactivex.Single;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
 
-public interface ServerMethods {
+public interface ServerRepository {
 
     //Search Method
     @POST("services/rest/?method=flickr.photos.search")

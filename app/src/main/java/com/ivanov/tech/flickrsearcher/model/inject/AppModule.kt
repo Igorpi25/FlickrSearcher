@@ -1,11 +1,8 @@
-package com.ivanov.tech.flickrsearcher
+package com.ivanov.tech.flickrsearcher.model.inject
 
-import android.accounts.AccountManager
 import android.app.Application
 import android.util.Log
-import toothpick.Toothpick
 import toothpick.smoothie.module.SmoothieApplicationModule
-import toothpick.smoothie.provider.AccountManagerProvider
 
 class AppModule(application: Application) : SmoothieApplicationModule(application,"com.ivanov.tech.flickrsearcher.prefs") {
     init {

@@ -1,7 +1,8 @@
-package com.ivanov.tech.flickrsearcher
+package com.ivanov.tech.flickrsearcher.ui
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import com.ivanov.tech.flickrsearcher.R
 import com.ivanov.tech.flickrsearcher.ui.searcher.SearcherFragment
 
 class MainActivity : AppCompatActivity() {

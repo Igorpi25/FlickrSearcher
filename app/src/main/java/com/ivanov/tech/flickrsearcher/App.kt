@@ -1,16 +1,12 @@
 package com.ivanov.tech.flickrsearcher
 
 import android.app.Application
-import android.content.Context
-import android.content.SharedPreferences
-import com.squareup.moshi.JsonAdapter
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.Types
-import toothpick.Scope;
+import com.ivanov.tech.flickrsearcher.model.inject.AppModule
 import toothpick.Toothpick;
 import toothpick.configuration.Configuration
 
 
+//Needed to send data to FullscreenActivity
 const val EXTRA_URL = "com.ivanov.tech.flickrsearcher.URL"
 const val EXTRA_TITLE = "com.ivanov.tech.flickrsearcher.TITLE"
 

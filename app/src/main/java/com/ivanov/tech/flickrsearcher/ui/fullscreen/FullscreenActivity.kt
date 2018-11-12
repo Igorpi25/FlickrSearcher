@@ -1,9 +1,12 @@
-package com.ivanov.tech.flickrsearcher
+package com.ivanov.tech.flickrsearcher.ui.fullscreen
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
+import com.ivanov.tech.flickrsearcher.EXTRA_TITLE
+import com.ivanov.tech.flickrsearcher.EXTRA_URL
+import com.ivanov.tech.flickrsearcher.R
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_fullscreen.*
 

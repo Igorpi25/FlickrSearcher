@@ -1,10 +1,10 @@
-package com.ivanov.tech.flickrsearcher
+package com.ivanov.tech.flickrsearcher.model.inject
 
-import android.app.Application
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.content.SharedPreferences
 import android.util.Log
+import com.ivanov.tech.flickrsearcher.model.repository.SuggestionsRepository
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
@@ -30,7 +30,7 @@ class SuggestionsRepositoryProvider:Provider<SuggestionsRepository>{
         return repository(prefs)
     }
 
-    private class repository(private val prefs:SharedPreferences): SuggestionsRepository{
+    private class repository(private val prefs:SharedPreferences): SuggestionsRepository {
 
         val livedata= MutableLiveData<List<String>>()
 

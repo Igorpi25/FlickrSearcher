@@ -1,4 +1,4 @@
-package com.ivanov.tech.flickrsearcher
+package com.ivanov.tech.flickrsearcher.model.repository
 
 import android.arch.lifecycle.LiveData
 

@@ -4,11 +4,10 @@ import android.arch.lifecycle.*
 import android.arch.paging.LivePagedListBuilder
 import android.arch.paging.PagedList
 import android.util.Log
-import com.ivanov.tech.flickrsearcher.AppModule
-import com.ivanov.tech.flickrsearcher.SearcherViewModelModule
-import com.ivanov.tech.flickrsearcher.SuggestionsRepository
-import com.ivanov.tech.flickrsearcher.server.ServerMethodsProvider
-import com.ivanov.tech.flickrsearcher.server.FlickrPhoto
+import com.ivanov.tech.flickrsearcher.model.SearcherPageKeyedDataSourceFactory
+import com.ivanov.tech.flickrsearcher.model.inject.SearcherViewModelModule
+import com.ivanov.tech.flickrsearcher.model.repository.SuggestionsRepository
+import com.ivanov.tech.flickrsearcher.model.entity.FlickrPhoto
 import io.reactivex.disposables.CompositeDisposable
 import toothpick.Toothpick
 import javax.inject.Inject
@@ -70,6 +69,7 @@ class SearcherViewModel : ViewModel() {
         Log.e("Igor Log","SearcherViewModel.onCleared")
 
         compositeDisposable.dispose()
+        Toothpick.closeScope("ViewModelScope")
     }
 
 

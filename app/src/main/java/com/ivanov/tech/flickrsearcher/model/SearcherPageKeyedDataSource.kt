@@ -1,11 +1,10 @@
-package com.ivanov.tech.flickrsearcher.ui.searcher
+package com.ivanov.tech.flickrsearcher.model
 
-import android.arch.lifecycle.MutableLiveData
 import android.arch.paging.PageKeyedDataSource
 import android.util.Log
-import com.ivanov.tech.flickrsearcher.SearcherViewModelModule
-import com.ivanov.tech.flickrsearcher.server.*
-import io.reactivex.Observable
+import com.ivanov.tech.flickrsearcher.model.entity.*
+import com.ivanov.tech.flickrsearcher.model.inject.ServerSettings
+import com.ivanov.tech.flickrsearcher.model.repository.ServerRepository
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import toothpick.Toothpick
@@ -16,20 +15,19 @@ class SearcherPageKeyedDataSource (
     : PageKeyedDataSource<Int, FlickrPhoto>() {
 
     @Inject
-    lateinit var serverMethods: ServerMethods
+    lateinit var serverRepository: ServerRepository
     @Inject
     lateinit var compositeDisposable: CompositeDisposable
 
     init{
         Log.e("Igor Log","SearcherPageKeyedDataSource init")
         val scope = Toothpick.openScopes("AppScope","ViewModelScope")
-        //scope.installModules(SearcherViewModelModule())
         Toothpick.inject(this, scope);
     }
 
     private fun searchPhotos(page:Int): Single<FlickrResponse> {
 
-        return serverMethods.searchPhotos(ServerSettings.KEY,"relevance", "1", 10, page, 0, "photos", "json", "1",text)
+        return serverRepository.searchPhotos(ServerSettings.KEY,"relevance", "1", 10, page, 0, "photos", "json", "1",text)
     }
 
     override fun loadInitial(params: LoadInitialParams<Int>, callback: LoadInitialCallback<Int, FlickrPhoto>) {

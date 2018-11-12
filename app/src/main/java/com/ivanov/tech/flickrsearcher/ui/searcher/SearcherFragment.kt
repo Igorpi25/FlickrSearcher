@@ -17,7 +17,8 @@ import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import com.ivanov.tech.flickrsearcher.*
 import kotterknife.bindView
-import com.ivanov.tech.flickrsearcher.server.FlickrPhoto
+import com.ivanov.tech.flickrsearcher.model.entity.FlickrPhoto
+import com.ivanov.tech.flickrsearcher.ui.fullscreen.FullscreenActivity
 import toothpick.Toothpick
 
 
@@ -27,7 +28,6 @@ class SearcherFragment : Fragment() {
     val search : AutoCompleteTextView by bindView(R.id.search)
 
     lateinit var viewModel: SearcherViewModel
-    lateinit var searcherPagedListAdapter : SearcherPagedListAdapter
 
     companion object {
         fun newInstance() = SearcherFragment()
@@ -40,7 +40,7 @@ class SearcherFragment : Fragment() {
 
         val view=inflater.inflate(R.layout.fragment_searcher, container, false)
 
-        val appScope = Toothpick.openScopes("AppScope","FragmentScope")
+        val appScope = Toothpick.openScopes("AppScope")
         Toothpick.inject(this, appScope);
 
         return view
@@ -60,6 +60,7 @@ class SearcherFragment : Fragment() {
     private fun setupPagedList() {
         Log.e("Igor Log","SearcherFragment.setupPagedList")
 
+        val searcherPagedListAdapter : SearcherPagedListAdapter
         searcherPagedListAdapter = SearcherPagedListAdapter(::photoItemClicked)
         recyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         recyclerView.adapter = searcherPagedListAdapter

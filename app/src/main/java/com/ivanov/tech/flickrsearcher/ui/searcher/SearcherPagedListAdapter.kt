@@ -3,7 +3,7 @@ package com.ivanov.tech.flickrsearcher.ui.searcher
 import android.arch.paging.PagedListAdapter
 import android.support.v7.util.DiffUtil
 import android.view.ViewGroup
-import com.ivanov.tech.flickrsearcher.server.FlickrPhoto
+import com.ivanov.tech.flickrsearcher.model.entity.FlickrPhoto
 
 class SearcherPagedListAdapter(val callback:(FlickrPhoto?)->Unit)
     : PagedListAdapter<FlickrPhoto, SearcherPagedListAdapterViewHolder>(diffUtilItemCallback) {

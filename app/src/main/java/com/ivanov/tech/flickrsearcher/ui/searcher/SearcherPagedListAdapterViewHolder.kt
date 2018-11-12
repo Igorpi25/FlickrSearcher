@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import com.ivanov.tech.flickrsearcher.R
-import com.ivanov.tech.flickrsearcher.server.FlickrPhoto
+import com.ivanov.tech.flickrsearcher.model.entity.FlickrPhoto
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.item_photo.view.*
 

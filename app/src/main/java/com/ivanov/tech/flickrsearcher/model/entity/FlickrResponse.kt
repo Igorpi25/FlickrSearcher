@@ -1,4 +1,4 @@
-package com.ivanov.tech.flickrsearcher.server
+package com.ivanov.tech.flickrsearcher.model.entity
 
 import com.squareup.moshi.Json
 
