@@ -3,26 +3,48 @@ package com.ivanov.tech.flickrsearcher.ui.searcher
 import android.arch.lifecycle.*
 import android.arch.paging.LivePagedListBuilder
 import android.arch.paging.PagedList
-import com.ivanov.tech.flickrsearcher.App.Companion.prefs
+import android.util.Log
+import com.ivanov.tech.flickrsearcher.SuggestionsRepository
 import com.ivanov.tech.flickrsearcher.server.ServerMethodsProvider
 import com.ivanov.tech.flickrsearcher.server.FlickrPhoto
-import io.reactivex.Flowable
-import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
-import java.util.ArrayList
+import toothpick.Toothpick
+import javax.inject.Inject
 
 class SearcherViewModel : ViewModel() {
 
+
+    @Inject
+    lateinit var suggestionsRepository : SuggestionsRepository
+
     private val pageSize = 10
-
-    var photoPagedList: LiveData<PagedList<FlickrPhoto>>
-    var suggestions : MutableLiveData<ArrayList<String>> = MutableLiveData()
-
-    private val compositeDisposable = CompositeDisposable()
 
     private val searcherPageKeyedDataSourceFactory: SearcherPageKeyedDataSourceFactory
 
+    private val compositeDisposable = CompositeDisposable()
+
+    var pagedList: LiveData<PagedList<FlickrPhoto>>
+
+    val suggestionsList:LiveData<List<String>>
+        get(){
+            return suggestionsRepository.getList()
+        }
+
+
+    var searchedText:String=""
+        set(text:String){
+            searcherPageKeyedDataSourceFactory.text = text
+            pagedList.value?.dataSource?.invalidate()
+
+            suggestionsRepository.put(text)
+        }
+
     init {
+
+        val scope = Toothpick.openScopes("AppScope","ViewModelScope")
+        Toothpick.inject(this, scope);
+
+
         searcherPageKeyedDataSourceFactory = SearcherPageKeyedDataSourceFactory(compositeDisposable, ServerMethodsProvider.serverMethods)
 
         val config = PagedList.Config.Builder()
@@ -31,9 +53,10 @@ class SearcherViewModel : ViewModel() {
                 .setEnablePlaceholders(false)
                 .build()
 
-        photoPagedList = LivePagedListBuilder<Int, FlickrPhoto>(searcherPageKeyedDataSourceFactory, config).build()
+        pagedList = LivePagedListBuilder<Int, FlickrPhoto>(searcherPageKeyedDataSourceFactory, config).build()
 
-        suggestions.postValue(prefs.suggestions as ArrayList<String>)
+        Log.e("Igor Log","${Toothpick.openScope("AppScope")}")
+
 
     }
 
@@ -42,8 +65,7 @@ class SearcherViewModel : ViewModel() {
         compositeDisposable.dispose()
     }
 
-    fun setText(text:String){
-        searcherPageKeyedDataSourceFactory.text = text
-        photoPagedList.value?.dataSource?.invalidate()
-    }
+
+
+
 }

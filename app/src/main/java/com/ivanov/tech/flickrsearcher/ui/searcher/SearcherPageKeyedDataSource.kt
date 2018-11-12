@@ -9,20 +9,20 @@ import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 
 class SearcherPageKeyedDataSource(
-        val text:String,
+        private val text:String,
         private val serverMethods: ServerMethods,
         private val compositeDisposable: CompositeDisposable)
     : PageKeyedDataSource<Int, FlickrPhoto>() {
 
 
-    fun searchPhotos(page:Int): Single<FlickrResponse> {
+    private fun searchPhotos(page:Int): Single<FlickrResponse> {
 
         return serverMethods.searchPhotos(ServerSettings.KEY,"relevance", "1", 10, page, 0, "photos", "json", "1",text)
     }
 
     override fun loadInitial(params: LoadInitialParams<Int>, callback: LoadInitialCallback<Int, FlickrPhoto>) {
 
-        Log.d("Igor Log","SearcherPageKeyedDataSource loadInitial");
+        Log.d("Igor Log","SearcherPageKeyedDataSource loadInitial text="+text);
 
         compositeDisposable.add(
                 searchPhotos(1)
@@ -43,7 +43,7 @@ class SearcherPageKeyedDataSource(
     }
 
     override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, FlickrPhoto>) {
-        Log.e("Igor Log","SearcherPageKeyedDataSource loadAfter params.key="+params.key)
+        Log.e("Igor Log","SearcherPageKeyedDataSource loadAfter params.key="+params.key+" text="+text)
 
         compositeDisposable.add(
                 searchPhotos(params.key)
@@ -63,6 +63,7 @@ class SearcherPageKeyedDataSource(
     }
 
     override fun loadBefore(params: LoadParams<Int>, callback: LoadCallback<Int, FlickrPhoto>) {
+        Log.e("Igor Log","SearcherPageKeyedDataSource loadBefore params.key="+params.key+" text="+text)
     }
 
 }

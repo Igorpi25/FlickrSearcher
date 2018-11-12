@@ -15,15 +15,10 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
-import com.ivanov.tech.flickrsearcher.R
+import com.ivanov.tech.flickrsearcher.*
 import kotterknife.bindView
-import com.ivanov.tech.flickrsearcher.App.Companion.prefs
-import com.ivanov.tech.flickrsearcher.EXTRA_TITLE
-import com.ivanov.tech.flickrsearcher.EXTRA_URL
-import com.ivanov.tech.flickrsearcher.FullscreenActivity
 import com.ivanov.tech.flickrsearcher.server.FlickrPhoto
-import io.reactivex.Single
-import java.util.*
+import toothpick.Toothpick
 
 
 class SearcherFragment : Fragment() {
@@ -34,35 +29,40 @@ class SearcherFragment : Fragment() {
     lateinit var viewModel: SearcherViewModel
     lateinit var searcherPagedListAdapter : SearcherPagedListAdapter
 
-
-
     companion object {
         fun newInstance() = SearcherFragment()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
+
         val view=inflater.inflate(R.layout.fragment_searcher, container, false)
+
+        val appScope = Toothpick.openScopes("AppScope","FragmentScope")
+        Toothpick.inject(this, appScope);
 
         return view
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+
+
         viewModel = ViewModelProviders.of(this).get(SearcherViewModel::class.java)
         // TODO: Use the ViewModel
-        createAdapter()
+        setupPagedList()
         setupAutoCompleteEditText()
     }
 
-    private fun createAdapter() {
+    private fun setupPagedList() {
         searcherPagedListAdapter = SearcherPagedListAdapter(::photoItemClicked)
         recyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         recyclerView.adapter = searcherPagedListAdapter
 
 
-        viewModel.photoPagedList.observe(this, Observer {
-            Log.e("Igor log","viewModel.photoPagedList.observe pagedlis.size="+it?.size)
+        viewModel.pagedList.observe(this, Observer {
+            Log.e("Igor log","viewModel.pagedList.observe pagedlis.size="+it?.size)
             searcherPagedListAdapter.submitList(it)
         })
 
@@ -70,33 +70,20 @@ class SearcherFragment : Fragment() {
 
     private fun setupAutoCompleteEditText(){
 
-        val adapter=ArrayAdapter<String>(context, android.R.layout.simple_list_item_1)
+        val arrayAdapter=ArrayAdapter<String>(context, android.R.layout.simple_list_item_1)// Create the adapter and set it to the AutoCompleteTextView
+        search.setAdapter(arrayAdapter)
 
-        viewModel.suggestions.observe(this, Observer{
-            adapter.clear()
-            adapter.addAll(it)
+        viewModel.suggestionsList.observe(this, Observer{
+            arrayAdapter.clear()
+            arrayAdapter.addAll(it)
         })
 
-        // Create the adapter and set it to the AutoCompleteTextView
-        search.setAdapter(adapter)
 
         search.setOnEditorActionListener() { v, actionId, event ->
-            if(actionId == EditorInfo.IME_ACTION_SEARCH || actionId == KeyEvent.KEYCODE_ENTER){
-
-                Log.e("Igor log","Add text to list of suggestion")
+            if(actionId == EditorInfo.IME_ACTION_SEARCH || event.keyCode == KeyEvent.KEYCODE_ENTER){
 
                 val text=search.text.toString()
-
-                //Save in Prefs
-                val temp = (prefs.suggestions as ArrayList<String>)
-                temp.add(text)
-                prefs.suggestions=temp
-
-                //Get suggestions from prefs and post to LiveData
-                viewModel.suggestions.postValue(prefs.suggestions as ArrayList<String>)
-
-                //Create new DataSource and PagedList pair
-                viewModel.setText(text)
+                viewModel.searchedText=text
 
                 true
             }else{
