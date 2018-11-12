@@ -3,17 +3,29 @@ package com.ivanov.tech.flickrsearcher.ui.searcher
 import android.arch.lifecycle.MutableLiveData
 import android.arch.paging.PageKeyedDataSource
 import android.util.Log
+import com.ivanov.tech.flickrsearcher.SearcherViewModelModule
 import com.ivanov.tech.flickrsearcher.server.*
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
+import toothpick.Toothpick
+import javax.inject.Inject
 
-class SearcherPageKeyedDataSource(
-        private val text:String,
-        private val serverMethods: ServerMethods,
-        private val compositeDisposable: CompositeDisposable)
+class SearcherPageKeyedDataSource (
+        private val text:String)
     : PageKeyedDataSource<Int, FlickrPhoto>() {
 
+    @Inject
+    lateinit var serverMethods: ServerMethods
+    @Inject
+    lateinit var compositeDisposable: CompositeDisposable
+
+    init{
+        Log.e("Igor Log","SearcherPageKeyedDataSource init")
+        val scope = Toothpick.openScopes("AppScope","ViewModelScope")
+        //scope.installModules(SearcherViewModelModule())
+        Toothpick.inject(this, scope);
+    }
 
     private fun searchPhotos(page:Int): Single<FlickrResponse> {
 

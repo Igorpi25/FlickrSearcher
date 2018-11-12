@@ -9,9 +9,7 @@ import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.disposables.CompositeDisposable
 
-class SearcherPageKeyedDataSourceFactory(
-        private val compositeDisposable: CompositeDisposable,
-        private val serverMethods: ServerMethods)
+class SearcherPageKeyedDataSourceFactory
     : DataSource.Factory<Int, FlickrPhoto>() {
 
     var text:String=""
@@ -20,7 +18,7 @@ class SearcherPageKeyedDataSourceFactory(
 
         Log.e("Igor Log","SearcherPageKeyedDataSourceFactory.create text="+text)
 
-        val newsDataSource = SearcherPageKeyedDataSource(text,serverMethods, compositeDisposable)
+        val newsDataSource = SearcherPageKeyedDataSource(text)
 
         return newsDataSource
     }

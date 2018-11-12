@@ -19,11 +19,13 @@ class SearcherViewModel : ViewModel() {
     @Inject
     lateinit var suggestionsRepository : SuggestionsRepository
 
+    @Inject
+    lateinit var compositeDisposable:CompositeDisposable //Need to dispose remaining Retrofits requests
+
     private val pageSize = 10
 
     private val searcherPageKeyedDataSourceFactory: SearcherPageKeyedDataSourceFactory
 
-    private val compositeDisposable = CompositeDisposable()
 
     var pagedList: LiveData<PagedList<FlickrPhoto>>
 
@@ -43,12 +45,14 @@ class SearcherViewModel : ViewModel() {
 
     init {
 
+        Log.e("Igor Log","SearcherViewModel init")
+
         val scope = Toothpick.openScopes("AppScope","ViewModelScope")
         scope.installModules(SearcherViewModelModule())
         Toothpick.inject(this, scope);
 
 
-        searcherPageKeyedDataSourceFactory = SearcherPageKeyedDataSourceFactory(compositeDisposable, ServerMethodsProvider.serverMethods)
+        searcherPageKeyedDataSourceFactory = SearcherPageKeyedDataSourceFactory()
 
         val config = PagedList.Config.Builder()
                 .setPageSize(pageSize)
@@ -62,6 +66,9 @@ class SearcherViewModel : ViewModel() {
 
     override fun onCleared() {
         super.onCleared()
+
+        Log.e("Igor Log","SearcherViewModel.onCleared")
+
         compositeDisposable.dispose()
     }
 
